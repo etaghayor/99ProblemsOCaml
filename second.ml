@@ -49,4 +49,36 @@ let range x y =
       x::res 
   in List.rev (aux [] x y )
 
+let rand_select l n =
+  let rec choose_and_remove l res k=
+    match l,k with
+    | [], x -> failwith "out of bounds"
+    | x::xs , 0 -> res @ xs, x
+    | x::xs, m -> choose_and_remove xs ( List.rev (x::(List.rev res))) (m-1)
+  and aux l res k =
+    match l,k with
+    | [] , x -> []
+    | x::xs , 0 -> x::res
+    | _ , m -> 
+      let t,x = choose_and_remove l [] (Random.int (List.length l)) 
+      in (aux t (x::res) (m-1))
+  in aux l [] (n-1)
 
+let rec lotto_select k m = rand_select (range 1 m) k
+
+let permutation l = rand_select l (List.length l)
+
+let rec aux_not_exists e = function
+  | [] -> true
+  | x::xs -> if x=e then false else aux_not_exists e xs
+
+let rec extract k l =
+  if k <= 0 then [[]]
+  else match l with
+    | [] -> []
+    | x::xs -> (List.map (fun e -> x::e) (extract (k-1) xs)) @ (extract (k) xs)
+
+(* let rec group l gs =
+(* let rec aux   *)
+  | [] -> l
+  | x::xs ->  *)
