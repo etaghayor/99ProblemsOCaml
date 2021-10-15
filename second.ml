@@ -91,3 +91,13 @@ let rec group l gs = match gs with
       | [] -> []
       | ex_elem::es -> List.map (fun x -> ex_elem :: x) (group (rest ex_elem l) tl) @ aux es l in aux exl l
 
+let length_sort l = List.sort (fun l1 -> fun l2 -> List.length l1 - List.length l2) l
+
+let rec aux_assign_count sublist = function
+  | [] -> []
+  | [x] -> [(1,x)]
+  | x::(y::xs as tl) -> if List.length x = List.length y then aux_assign_count (x::sublist) tl
+    else List.map (fun x -> (List.length sublist + 1 , x)) (x::sublist) @ aux_assign_count [] tl
+
+let frequency_sort l = List.map ( fun (x,l)-> l)
+    (List.sort (fun (x1,l1) -> fun (x2, l2) -> x1-x2) (aux_assign_count [] (length_sort l)))
