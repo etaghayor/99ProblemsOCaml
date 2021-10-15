@@ -78,7 +78,16 @@ let rec extract k l =
     | [] -> []
     | x::xs -> (List.map (fun e -> x::e) (extract (k-1) xs)) @ (extract (k) xs)
 
-(* let rec group l gs =
-(* let rec aux   *)
-  | [] -> l
-  | x::xs ->  *)
+
+let rec rest l1 l2 = match l1 with
+  | [] -> l2
+  | x::xs -> rest xs (List.filter (fun e -> e <> x) l2) 
+
+let rec group l gs = match gs with
+  | [] -> [[]]
+  | h::tl -> let exl = extract h l in 
+    let rec aux exl l =
+      match exl with
+      | [] -> []
+      | ex_elem::es -> List.map (fun x -> ex_elem :: x) (group (rest ex_elem l) tl) @ aux es l in aux exl l
+
