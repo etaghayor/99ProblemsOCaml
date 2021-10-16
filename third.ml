@@ -31,3 +31,30 @@ let encode l =
   in List.rev (aux 0 [] l)
 
 let factors_and_pow n = encode (factors n)
+
+let pow a b = int_of_float (Float.pow (float_of_int a) (float_of_int b))
+
+let phi_improved n = let rec aux res = function 
+    | [] -> res
+    | (x,p)::xs -> aux ((x-1)*(pow x (p-1)) * res) xs
+  in aux 1 (factors_and_pow n)
+
+let all_primes n m =
+  let rec aux res n m = 
+    if n <= m then 
+      if is_prime n then aux (n::res) (n+1) m else aux res (n+1) m 
+    else res in aux [] n m
+
+let goldbach n = 
+  let rec aux a b =
+    if (is_prime a && is_prime b ) then (a,b) else
+      aux (a+1) (b-1) in aux 0 n
+
+let goldbach_list n m = 
+  let rec aux res n m =
+    if (n <= m) then aux ((n,(goldbach n))::res) (n+2) m else res
+  in List.rev(aux [] ((n + 1) / 2 * 2)((m + 1) / 2 * 2))
+
+let goldbach_limit n m limit= 
+  List.filter (fun (n,(g1,g2)) -> g1>limit) (goldbach_list n m)
+
